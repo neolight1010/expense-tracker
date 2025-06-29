@@ -1,2 +1,14 @@
+import Test.HUnit (Test (TestCase, TestLabel, TestList), runTestTT, (@?=))
+import Lib (helloWorld)
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = do
+  _ <-
+    runTestTT $
+      TestLabel "lib tests" $
+        TestList
+          [ TestCase $
+              helloWorld @?= "Hello, World!"
+          ]
+
+  pure ()
