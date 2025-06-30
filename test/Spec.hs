@@ -1,5 +1,5 @@
-import Test.HUnit (Test (TestCase, TestLabel, TestList), runTestTT, (@?=))
-import Lib (helloWorld)
+import Lib (Expenses (..), Item (..), expensesTotal)
+import Test.HUnit (Test (TestCase, TestLabel, TestList), runTestTT, (@?=), (~?=))
 
 main :: IO ()
 main = do
@@ -7,8 +7,11 @@ main = do
     runTestTT $
       TestLabel "lib tests" $
         TestList
-          [ TestCase $
-              helloWorld @?= "Hello, World!"
+          [ expensesTotal (Expenses [])
+              ~?= 0,
+            expensesTotal
+              (Expenses [(Item "item", 1)])
+              ~?= 1
           ]
 
   pure ()
