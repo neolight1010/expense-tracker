@@ -1,0 +1,12 @@
+expenses:
+  2025-06:
+    - item: "bread"
+      price: 0.5
+    - item: "google one"
+      price: 10
+
+items:
+  bread:
+    category: food
+    synonyms:
+      - pan
