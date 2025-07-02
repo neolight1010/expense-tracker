@@ -3,10 +3,17 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/topics/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: iris-0.1.0.0@sha256:dd6d664b87dc78b9a2f3b7316dedb5aacdaebb84083f97c50625c5d445edf288,3787
+    pantry-tree:
+      sha256: c4273cac72fa250b4e3dc25dbb408589b5c7a63e02d6eb18b80ce3ebf342b3c4
+      size: 1614
+  original:
+    hackage: iris-0.1.0.0
 snapshots:
 - completed:
-    sha256: 238fa745b64f91184f9aa518fe04bdde6552533d169b0da5256670df83a0f1a9
-    size: 721141
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/44.yaml
-  original: lts-22.44
+    sha256: a81fb3877c4f9031e1325eb3935122e608d80715dc16b586eb11ddbff8671ecd
+    size: 640086
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/21/25.yaml
+  original: lts-21.25
