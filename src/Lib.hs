@@ -2,10 +2,7 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 
 module Lib
-  ( Item (..),
-    Expenses (..),
-    expensesTotal,
-    Ledger (..),
+  ( Ledger (..),
     ExpenseList,
     ExpenseEntry (..),
     ExpenseGroups,
@@ -38,12 +35,3 @@ instance FromJSON ExpenseEntry
 type ItemId = String
 
 type Price = Float
-
-newtype Item = Item String
-  deriving (Show)
-
-newtype Expenses = Expenses [(Item, Float)]
-  deriving (Show)
-
-expensesTotal :: Expenses -> Float
-expensesTotal (Expenses xs) = sum $ map snd xs

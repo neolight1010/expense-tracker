@@ -5,7 +5,7 @@ import Data.Either (isLeft)
 import Data.Map (fromList)
 import Data.Yaml (decodeEither')
 import Data.Yaml.Internal (ParseException)
-import Lib (ExpenseEntry (..), ExpenseGroups (..), Expenses (..), Item (..), Ledger (..), expensesTotal)
+import Lib (ExpenseEntry (..), Ledger (..))
 import Test.HUnit (Test (TestLabel, TestList), runTestTT, (~?), (~?=))
 
 main :: IO ()
@@ -14,15 +14,7 @@ main = do
     runTestTT $
       TestLabel "lib tests" $
         TestList
-          [ TestLabel "expensesTotal" $
-              TestList
-                [ expensesTotal (Expenses [])
-                    ~?= 0,
-                  expensesTotal
-                    (Expenses [(Item "item", 1)])
-                    ~?= 1
-                ],
-            TestLabel
+          [ TestLabel
               "ledger io"
               $ TestList
                 [ let decoded :: Either ParseException Ledger
