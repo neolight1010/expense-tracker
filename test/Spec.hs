@@ -3,9 +3,8 @@
 
 import Data.Either (isLeft)
 import Data.Map (fromList)
-import Data.Yaml (decodeEither')
 import Data.Yaml.Internal (ParseException)
-import Lib (ExpenseEntry (..), Ledger (..))
+import Lib (ExpenseEntry (..), Ledger (..), decodeLedger)
 import Test.HUnit (Test (TestLabel, TestList), runTestTT, (~?), (~?=))
 
 main :: IO ()
@@ -18,11 +17,11 @@ main = do
               "ledger io"
               $ TestList
                 [ let decoded :: Either ParseException Ledger
-                      decoded = decodeEither' ""
+                      decoded = decodeLedger ""
                    in isLeft decoded ~? "expected decoding to fail",
                   let decoded :: Either ParseException Ledger
                       decoded =
-                        decodeEither'
+                        decodeLedger
                           "expenses:\n\
                           \  group1:\n\
                           \    - item: item1\n\
