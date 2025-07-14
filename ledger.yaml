@@ -4,6 +4,11 @@ expenses:
       price: 0.5
     - item: "google one"
       price: 10
+  2025-07:
+    - item: "bread"
+      price: 0.9
+    - item: "spotify"
+      price: 6
 
 items:
   bread:

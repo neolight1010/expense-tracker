@@ -51,11 +51,12 @@ main = do
                      ~: expenseGroupNames
                        ( Ledger
                            ( fromList
-                               [ ("group1", [])
+                               [ ("group1", []),
+                                 ("group2", [])
                                ]
                            )
                        )
-                     ~?= ["group1"]
+                     ~?= ["group1", "group2"]
                  ]
           ]
 

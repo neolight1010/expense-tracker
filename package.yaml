@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - yaml
 - containers
+- bytestring
 
 ghc-options:
 - -Wall
