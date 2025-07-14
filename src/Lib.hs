@@ -8,11 +8,12 @@ module Lib
     ExpenseList,
     ExpenseEntry (..),
     ExpenseGroups,
-    decodeLedger
+    decodeLedger,
+    expenseGroupNames
   )
 where
 
-import Data.Map (Map)
+import Data.Map (Map, keys)
 import Data.Yaml.Aeson (FromJSON)
 import GHC.Generics (Generic)
 import Data.Yaml (decodeEither')
@@ -42,3 +43,6 @@ type Price = Float
 
 decodeLedger :: _ -> Either _ Ledger
 decodeLedger = decodeEither'
+
+expenseGroupNames :: Ledger -> [String]
+expenseGroupNames = keys . expenses

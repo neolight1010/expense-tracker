@@ -4,8 +4,13 @@
 import Data.Either (isLeft)
 import Data.Map (fromList)
 import Data.Yaml.Internal (ParseException)
-import Lib (ExpenseEntry (..), Ledger (..), decodeLedger)
-import Test.HUnit (Test (TestLabel, TestList), runTestTT, (~?), (~?=))
+import Lib
+  ( ExpenseEntry (..),
+    Ledger (..),
+    decodeLedger,
+    expenseGroupNames,
+  )
+import Test.HUnit (Test (TestLabel, TestList), runTestTT, (~:), (~?), (~?=))
 
 main :: IO ()
 main = do
@@ -39,7 +44,19 @@ main = do
                                     )
                                   ]
                               )
-                ]
+                ],
+            "expenseGroupNames"
+              ~: [ "empty ledger" ~: expenseGroupNames (Ledger mempty) ~?= [],
+                   "non-empty ledger"
+                     ~: expenseGroupNames
+                       ( Ledger
+                           ( fromList
+                               [ ("group1", [])
+                               ]
+                           )
+                       )
+                     ~?= ["group1"]
+                 ]
           ]
 
   pure ()
