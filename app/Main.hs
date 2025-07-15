@@ -9,7 +9,8 @@ import Control.Monad.IO.Class (MonadIO (..))
 import Control.Monad.Reader (MonadReader)
 import qualified Data.ByteString as ByteString
 import qualified Iris
-import Lib (Ledger, decodeLedger, expenseGroupNames)
+import Lib (decodeLedger)
+import ListCommand (handleListCommand)
 import qualified Options.Applicative as Opt
 
 defaultLedgerPath :: String
@@ -36,16 +37,18 @@ appSettings =
 
 cmdParser :: Opt.Parser Options
 cmdParser =
-  Options
-    <$> Opt.hsubparser
-      ( Opt.command "list" (Opt.info (pure List) (Opt.progDesc "List all the expense groups"))
-      )
+  let listCommand = Opt.command "list" (Opt.info (pure List) (Opt.progDesc "List all the expense groups"))
+      summaryCommand = Opt.command "summary" (Opt.info (Summary <$> Opt.strArgument (Opt.metavar "GROUP" <> Opt.help "Group name to summarize")) (Opt.progDesc "Summarize an expense group"))
+   in Options
+        <$> Opt.hsubparser
+          ( listCommand <> summaryCommand
+          )
 
 newtype Options = Options
   { optCommand :: Command
   }
 
-data Command = List
+data Command = List | Summary String
   deriving (Show)
 
 handleCommand :: Command -> IO ()
@@ -57,12 +60,8 @@ handleCommand command = do
     Right l ->
       case command of
         List -> handleListCommand l
+        Summary groupName -> putStrLn ("TODO Implement summary command: " ++ groupName)
     Left _ -> putStrLn "Could not parse ledger file!"
-
-handleListCommand :: Ledger -> IO ()
-handleListCommand ledger =
-  let groupLines = (unlines . expenseGroupNames) ledger
-   in putStrLn groupLines
 
 app :: App ()
 app = do

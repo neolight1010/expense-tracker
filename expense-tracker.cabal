@@ -43,6 +43,7 @@ library
 executable expense-tracker-exe
   main-is: Main.hs
   other-modules:
+      ListCommand
       Paths_expense_tracker
   autogen-modules:
       Paths_expense_tracker
