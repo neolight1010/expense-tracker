@@ -5,18 +5,20 @@
 
 module Lib
   ( Ledger (..),
-    ExpenseList,
+    ExpenseGroup,
     ExpenseEntry (..),
     ExpenseGroups,
+    ExpenseGroupSummary (..),
     decodeLedger,
-    expenseGroupNames
+    expenseGroupNames,
+    expenseGroupSummary,
   )
 where
 
-import Data.Map (Map, keys)
+import qualified Data.Map as Map
+import Data.Yaml (decodeEither')
 import Data.Yaml.Aeson (FromJSON)
 import GHC.Generics (Generic)
-import Data.Yaml (decodeEither')
 
 newtype Ledger = Ledger
   { expenses :: ExpenseGroups
@@ -25,17 +27,20 @@ newtype Ledger = Ledger
 
 instance FromJSON Ledger
 
-type ExpenseGroups = Map String ExpenseList
+type ExpenseGroups = Map.Map String ExpenseGroup
 
-type ExpenseList = [ExpenseEntry]
+type ExpenseGroup = [ExpenseEntry]
 
-data ExpenseEntry = ExpenseEntry
-  { item :: ItemId,
-    price :: Price
-  }
+data ExpenseEntry = ExpenseEntry {item :: ItemId, price :: Price}
   deriving (Generic, Eq, Show)
 
 instance FromJSON ExpenseEntry
+
+expenseEntryToTuple :: ExpenseEntry -> (ItemId, Price)
+expenseEntryToTuple (ExpenseEntry i p) = (i, p)
+
+expenseEntryFromTuple :: (ItemId, Price) -> ExpenseEntry
+expenseEntryFromTuple (i, p) = ExpenseEntry i p
 
 type ItemId = String
 
@@ -45,4 +50,12 @@ decodeLedger :: _ -> Either _ Ledger
 decodeLedger = decodeEither'
 
 expenseGroupNames :: Ledger -> [String]
-expenseGroupNames = keys . expenses
+expenseGroupNames = Map.keys . expenses
+
+newtype ExpenseGroupSummary = ExpenseGroupSummary [ExpenseEntry]
+  deriving (Show, Eq)
+
+expenseGroupSummary :: ExpenseGroup -> ExpenseGroupSummary
+expenseGroupSummary group =
+  let groupMap = Map.fromListWith (+) (expenseEntryToTuple <$> group)
+   in ExpenseGroupSummary (expenseEntryFromTuple <$> Map.toList groupMap)

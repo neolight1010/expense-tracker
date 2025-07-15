@@ -6,9 +6,11 @@ import Data.Map (fromList)
 import Data.Yaml.Internal (ParseException)
 import Lib
   ( ExpenseEntry (..),
+    ExpenseGroupSummary (..),
     Ledger (..),
     decodeLedger,
     expenseGroupNames,
+    expenseGroupSummary,
   )
 import Test.HUnit (Test (TestLabel, TestList), runTestTT, (~:), (~?), (~?=))
 
@@ -57,6 +59,15 @@ main = do
                            )
                        )
                      ~?= ["group1", "group2"]
+                 ],
+            "expenseGroupSummary"
+              ~: [ "empty group" ~: expenseGroupSummary [] ~?= ExpenseGroupSummary [],
+                   "non-empty group"
+                     ~: expenseGroupSummary
+                       [ ExpenseEntry {item = "a", price = 1},
+                         ExpenseEntry {item = "a", price = 1}
+                       ]
+                     ~?= ExpenseGroupSummary [ExpenseEntry {item = "a", price = 2}]
                  ]
           ]
 
