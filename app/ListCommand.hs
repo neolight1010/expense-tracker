@@ -1,6 +1,6 @@
 module ListCommand (handleListCommand) where
 
-import Lib (Ledger, expenseGroupNames)
+import Lib.Ledger (Ledger, expenseGroupNames)
 
 handleListCommand :: Ledger -> IO ()
 handleListCommand ledger =

@@ -4,13 +4,11 @@
 import Data.Either (isLeft)
 import Data.Map (fromList)
 import Data.Yaml.Internal (ParseException)
-import Lib
-  ( ExpenseEntry (..),
-    ExpenseGroupSummary (..),
-    Ledger (..),
+import Lib.ExpenseGroup (ExpenseEntry (..), ExpenseGroupSummary (..), expenseGroupSummary)
+import Lib.Ledger
+  ( Ledger (..),
     decodeLedger,
     expenseGroupNames,
-    expenseGroupSummary,
   )
 import Test.HUnit (Test (TestLabel, TestList), runTestTT, (~:), (~?), (~?=))
 

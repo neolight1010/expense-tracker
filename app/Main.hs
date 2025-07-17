@@ -9,7 +9,7 @@ import Control.Monad.IO.Class (MonadIO (..))
 import Control.Monad.Reader (MonadReader)
 import qualified Data.ByteString as ByteString
 import qualified Iris
-import Lib (decodeLedger)
+import Lib.Ledger (decodeLedger)
 import ListCommand (handleListCommand)
 import qualified Options.Applicative as Opt
 
