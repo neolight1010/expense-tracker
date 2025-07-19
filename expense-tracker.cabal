@@ -68,6 +68,8 @@ test-suite expense-tracker-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Test.ExpenseGroup
+      Test.Ledger
       Paths_expense_tracker
   autogen-modules:
       Paths_expense_tracker
