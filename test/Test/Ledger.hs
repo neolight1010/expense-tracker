@@ -6,13 +6,8 @@ module Test.Ledger (tests) where
 import Data.Either (isLeft)
 import Data.Map (fromList)
 import Data.Yaml.Internal (ParseException)
-import Lib.ExpenseGroup (ExpenseEntry (..))
-import Lib.Ledger
-  ( Ledger (..),
-    decodeLedger,
-    expenseGroup,
-    expenseGroupNames,
-  )
+import qualified Lib.ExpenseGroup as ExpenseGroup
+import Lib.Ledger (Ledger (..), decodeLedger, expenseGroup, expenseGroupNames, expenseGroupSummary)
 import Test.HUnit (Test (TestLabel, TestList), (~:), (~?), (~?=))
 
 tests :: [Test]
@@ -38,7 +33,7 @@ tests =
                     ~?= Ledger
                       ( fromList
                           [ ( "group1",
-                              [ ExpenseEntry {item = "item1", price = 0.1}
+                              [ ExpenseGroup.ExpenseEntry {ExpenseGroup.item = "item1", ExpenseGroup.price = 0.1}
                               ]
                             )
                           ]
@@ -50,7 +45,7 @@ tests =
              ~: expenseGroupNames
                ( Ledger
                    ( fromList
-                       [ ("group1", []),
+                        [ ("group1", []),
                          ("group2", [])
                        ]
                    )
@@ -60,5 +55,17 @@ tests =
     "expenseGroup"
       ~: [ "not-found group" ~: expenseGroup (Ledger mempty) "group" ~?= Nothing,
            "found group" ~: expenseGroup (Ledger (fromList [("group1", [])])) "group1" ~?= Just []
+         ],
+    "expenseGroupSummary"
+      ~: [ "not-found group" ~: expenseGroupSummary (Ledger mempty) "group" ~?= Nothing,
+           "found group"
+             ~: expenseGroupSummary
+               ( Ledger
+                   ( fromList
+                       [("group1", [])]
+                   )
+               )
+               "group1"
+             ~?= Just (ExpenseGroup.expenseGroupSummary [])
          ]
   ]

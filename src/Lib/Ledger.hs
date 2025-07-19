@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE PartialTypeSignatures #-}
 {-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 
 module Lib.Ledger
@@ -9,7 +9,8 @@ module Lib.Ledger
     ExpenseGroups,
     decodeLedger,
     expenseGroupNames,
-    expenseGroup
+    expenseGroup,
+    expenseGroupSummary,
   )
 where
 
@@ -17,7 +18,6 @@ import qualified Data.Map as Map
 import Data.Yaml (decodeEither')
 import Data.Yaml.Aeson (FromJSON)
 import GHC.Generics (Generic)
-
 import qualified Lib.ExpenseGroup as ExpenseGroup
 
 newtype Ledger = Ledger
@@ -36,5 +36,7 @@ decodeLedger :: _ -> Either _ Ledger
 decodeLedger = decodeEither'
 
 expenseGroup :: Ledger -> String -> Maybe ExpenseGroup.ExpenseGroup
-expenseGroup (Ledger { expenses }) = flip Map.lookup expenses
+expenseGroup (Ledger {expenses}) = flip Map.lookup expenses
 
+expenseGroupSummary :: Ledger -> String -> Maybe ExpenseGroup.ExpenseGroupSummary
+expenseGroupSummary ledger = fmap ExpenseGroup.expenseGroupSummary . expenseGroup ledger 
