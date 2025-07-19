@@ -1,13 +1,15 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 
 module Lib.Ledger
   ( Ledger (..),
     ExpenseGroups,
     decodeLedger,
-    expenseGroupNames
+    expenseGroupNames,
+    expenseGroup
   )
 where
 
@@ -32,4 +34,7 @@ expenseGroupNames = Map.keys . expenses
 
 decodeLedger :: _ -> Either _ Ledger
 decodeLedger = decodeEither'
+
+expenseGroup :: Ledger -> String -> Maybe ExpenseGroup.ExpenseGroup
+expenseGroup (Ledger { expenses }) = flip Map.lookup expenses
 

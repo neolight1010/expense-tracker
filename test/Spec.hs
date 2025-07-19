@@ -8,6 +8,7 @@ import Lib.ExpenseGroup (ExpenseEntry (..), ExpenseGroupSummary (..), expenseGro
 import Lib.Ledger
   ( Ledger (..),
     decodeLedger,
+    expenseGroup,
     expenseGroupNames,
   )
 import Test.HUnit (Test (TestLabel, TestList), runTestTT, (~:), (~?), (~?=))
@@ -66,6 +67,10 @@ main = do
                          ExpenseEntry {item = "a", price = 1}
                        ]
                      ~?= ExpenseGroupSummary [ExpenseEntry {item = "a", price = 2}]
+                 ],
+            "expenseGroup"
+              ~: [ "not-found group" ~: expenseGroup (Ledger mempty) "group" ~?= Nothing,
+                   "found group" ~: expenseGroup (Ledger (fromList [("group1", [])])) "group1" ~?= Just []
                  ]
           ]
 
