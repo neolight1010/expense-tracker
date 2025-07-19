@@ -5,7 +5,7 @@
 module Lib.ExpenseGroup (ExpenseGroupSummary (..), expenseGroupSummary, ExpenseGroup, ExpenseEntry (..)) where
 
 import qualified Data.Map as Map
-import Data.Yaml.Aeson (FromJSON)
+import Data.Yaml.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
 import Lib.Item (ItemId)
 import Lib.Price (Price)
@@ -16,9 +16,12 @@ data ExpenseEntry = ExpenseEntry {item :: ItemId, price :: Price}
   deriving (Generic, Eq, Show)
 
 instance FromJSON ExpenseEntry
+instance ToJSON ExpenseEntry
 
 newtype ExpenseGroupSummary = ExpenseGroupSummary [ExpenseEntry]
-  deriving (Show, Eq)
+  deriving (Generic, Show, Eq)
+
+instance ToJSON ExpenseGroupSummary
 
 expenseGroupSummary :: ExpenseGroup -> ExpenseGroupSummary
 expenseGroupSummary group =

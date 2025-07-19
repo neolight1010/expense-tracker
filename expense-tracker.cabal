@@ -46,6 +46,7 @@ library
 executable expense-tracker-exe
   main-is: Main.hs
   other-modules:
+      ExpensesCli.SummaryCommand
       ListCommand
       Paths_expense_tracker
   autogen-modules:

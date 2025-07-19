@@ -13,6 +13,8 @@ import Lib.Ledger (decodeLedger)
 import ListCommand (handleListCommand)
 import qualified Options.Applicative as Opt
 
+import ExpensesCli.SummaryCommand (handleSummaryCommand)
+
 defaultLedgerPath :: String
 defaultLedgerPath = "ledger.yaml"
 
@@ -54,13 +56,13 @@ data Command = List | Summary String
 handleCommand :: Command -> IO ()
 handleCommand command = do
   ledgerFile <- ByteString.readFile defaultLedgerPath
-  let ledger = decodeLedger ledgerFile
+  let decodedLedger = decodeLedger ledgerFile
 
-  case ledger of
-    Right l ->
+  case decodedLedger of
+    Right ledger ->
       case command of
-        List -> handleListCommand l
-        Summary groupName -> putStrLn ("TODO Implement summary command: " ++ groupName)
+        List -> handleListCommand ledger
+        Summary groupName -> handleSummaryCommand ledger groupName
     Left _ -> putStrLn "Could not parse ledger file!"
 
 app :: App ()
