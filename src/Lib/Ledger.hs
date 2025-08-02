@@ -19,9 +19,11 @@ import Data.Yaml (decodeEither')
 import Data.Yaml.Aeson (FromJSON)
 import GHC.Generics (Generic)
 import qualified Lib.ExpenseGroup as ExpenseGroup
+import Lib.Item (ItemDefinitions)
 
-newtype Ledger = Ledger
-  { expenses :: ExpenseGroups
+data Ledger = Ledger
+  { expenses :: ExpenseGroups,
+    items :: ItemDefinitions
   }
   deriving (Generic, Eq, Show)
 
@@ -39,4 +41,4 @@ expenseGroup :: Ledger -> String -> Maybe ExpenseGroup.ExpenseGroup
 expenseGroup (Ledger {expenses}) = flip Map.lookup expenses
 
 expenseGroupSummary :: Ledger -> String -> Maybe ExpenseGroup.ExpenseGroupSummary
-expenseGroupSummary ledger = fmap ExpenseGroup.expenseGroupSummary . expenseGroup ledger 
+expenseGroupSummary ledger = fmap ExpenseGroup.expenseGroupSummary . expenseGroup ledger

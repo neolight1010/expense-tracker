@@ -9,6 +9,7 @@ import Data.Yaml.Internal (ParseException)
 import qualified Lib.ExpenseGroup as ExpenseGroup
 import Lib.Ledger (Ledger (..), decodeLedger, expenseGroup, expenseGroupNames, expenseGroupSummary)
 import Test.HUnit (Test (TestLabel, TestList), (~:), (~?), (~?=))
+import Lib.Item (Item(..))
 
 tests :: [Test]
 tests =
@@ -25,6 +26,10 @@ tests =
                   \  group1:\n\
                   \    - item: item1\n\
                   \      price: 0.1\n\
+                  \\n\
+                  \items:\n\
+                  \  item1:\n\
+                  \    category: category1\n\
                   \"
            in case decoded of
                 Left e -> False ~? "decoding should not have failed: " ++ show e
@@ -38,32 +43,36 @@ tests =
                             )
                           ]
                       )
+                      ( fromList
+                        [ ("item1", Item { category = "category1" }) ] )
         ],
     "expenseGroupNames"
-      ~: [ "empty ledger" ~: expenseGroupNames (Ledger mempty) ~?= [],
+      ~: [ "empty ledger" ~: expenseGroupNames (Ledger mempty mempty) ~?= [],
            "non-empty ledger"
              ~: expenseGroupNames
                ( Ledger
                    ( fromList
-                        [ ("group1", []),
+                       [ ("group1", []),
                          ("group2", [])
                        ]
                    )
+                   mempty
                )
              ~?= ["group1", "group2"]
          ],
     "expenseGroup"
-      ~: [ "not-found group" ~: expenseGroup (Ledger mempty) "group" ~?= Nothing,
-           "found group" ~: expenseGroup (Ledger (fromList [("group1", [])])) "group1" ~?= Just []
+      ~: [ "not-found group" ~: expenseGroup (Ledger mempty mempty) "group" ~?= Nothing,
+           "found group" ~: expenseGroup (Ledger (fromList [("group1", [])]) mempty) "group1" ~?= Just []
          ],
     "expenseGroupSummary"
-      ~: [ "not-found group" ~: expenseGroupSummary (Ledger mempty) "group" ~?= Nothing,
+      ~: [ "not-found group" ~: expenseGroupSummary (Ledger mempty mempty) "group" ~?= Nothing,
            "found group"
              ~: expenseGroupSummary
                ( Ledger
                    ( fromList
                        [("group1", [])]
                    )
+                   mempty
                )
                "group1"
              ~?= Just (ExpenseGroup.expenseGroupSummary [])
