@@ -2,6 +2,7 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 {-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 
 module Lib.Ledger
@@ -41,4 +42,4 @@ expenseGroup :: Ledger -> String -> Maybe ExpenseGroup.ExpenseGroup
 expenseGroup (Ledger {expenses}) = flip Map.lookup expenses
 
 expenseGroupSummary :: Ledger -> String -> Maybe ExpenseGroup.ExpenseGroupSummary
-expenseGroupSummary ledger = fmap ExpenseGroup.expenseGroupSummary . expenseGroup ledger
+expenseGroupSummary ledger = fmap (ExpenseGroup.expenseGroupSummary ledger.items) . expenseGroup ledger

@@ -7,7 +7,9 @@ module Lib.ExpenseGroup (ExpenseGroupSummary (..), expenseGroupSummary, ExpenseG
 import qualified Data.Map as Map
 import Data.Yaml.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
-import Lib.Item (ItemId)
+import Lib.Item (ItemId, ItemDefinitions)
+import qualified Data.Bifunctor
+import qualified Lib.Item as Item
 import Lib.Price (Price)
 
 type ExpenseGroup = [ExpenseEntry]
@@ -18,18 +20,29 @@ data ExpenseEntry = ExpenseEntry {item :: ItemId, price :: Price}
 instance FromJSON ExpenseEntry
 instance ToJSON ExpenseEntry
 
-newtype ExpenseGroupSummary = ExpenseGroupSummary [ExpenseEntry]
+data ExpenseGroupSummary = ExpenseGroupSummary { itemTotals :: [ExpenseEntry], categoryTotals :: [(String, Price)] }
   deriving (Generic, Show, Eq)
 
 instance ToJSON ExpenseGroupSummary
 
-expenseGroupSummary :: ExpenseGroup -> ExpenseGroupSummary
-expenseGroupSummary group =
-  let groupMap = Map.fromListWith (+) (expenseEntryToTuple <$> group)
-   in ExpenseGroupSummary (expenseEntryFromTuple <$> Map.toList groupMap)
+expenseGroupSummary :: ItemDefinitions -> ExpenseGroup -> ExpenseGroupSummary
+expenseGroupSummary itemDefinitions group =
+  let itemExpensesMap = Map.fromListWith (+) (expenseEntryToTuple <$> group)
+      itemTotals' = expenseEntryFromTuple <$> Map.toList itemExpensesMap
+
+      findCategory :: ItemId -> String
+      findCategory itemId = maybe noCategory Item.category (Map.lookup itemId itemDefinitions)
+
+      categoryExpensesList = Data.Bifunctor.first findCategory . expenseEntryToTuple <$> group
+      categoryTotals' = Map.toList $ Map.fromListWith (+) categoryExpensesList
+
+   in ExpenseGroupSummary itemTotals' categoryTotals'
 
 expenseEntryToTuple :: ExpenseEntry -> (ItemId, Price)
 expenseEntryToTuple (ExpenseEntry i p) = (i, p)
 
 expenseEntryFromTuple :: (ItemId, Price) -> ExpenseEntry
 expenseEntryFromTuple (i, p) = ExpenseEntry i p
+
+noCategory :: String
+noCategory = "[no-category]"

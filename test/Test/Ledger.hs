@@ -75,6 +75,6 @@ tests =
                    mempty
                )
                "group1"
-             ~?= Just (ExpenseGroup.expenseGroupSummary [])
+             ~?= Just (ExpenseGroup.expenseGroupSummary mempty [])
          ]
   ]
