@@ -25,7 +25,8 @@ tests =
                   "expenses:\n\
                   \  group1:\n\
                   \    - item: item1\n\
-                  \      price: 0.1\n\
+                  \      logs:\n\
+                  \        - 0.1\n\
                   \\n\
                   \items:\n\
                   \  item1:\n\
@@ -38,7 +39,7 @@ tests =
                     ~?= Ledger
                       ( fromList
                           [ ( "group1",
-                              [ ExpenseGroup.ExpenseEntry {ExpenseGroup.item = "item1", ExpenseGroup.price = 0.1}
+                              [ ExpenseGroup.ExpenseEntry {ExpenseGroup.item = "item1", ExpenseGroup.logs = [0.1]}
                               ]
                             )
                           ]

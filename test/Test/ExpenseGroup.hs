@@ -17,14 +17,14 @@ tests =
                ( Map.fromList
                    [("a", Item {category = "category1"})]
                )
-               [ ExpenseEntry {item = "a", price = 1},
-                 ExpenseEntry {item = "a", price = 1},
-                 ExpenseEntry {item = "b", price = 1}
+               [ ExpenseEntry {item = "a", logs = [1, 1]},
+                 ExpenseEntry {item = "a", logs = [1]},
+                 ExpenseEntry {item = "b", logs = [1, 1]}
                ]
              ~?= ExpenseGroupSummary
-               [ ExpenseEntry {item = "a", price = 2},
-                 ExpenseEntry {item = "b", price = 1}
+               [ ("a", 3),
+                 ("b", 2)
                ]
-               [("[no-category]", 1), ("category1", 2)]
+               [("[no-category]", 2), ("category1", 3)]
          ]
   ]
