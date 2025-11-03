@@ -11,7 +11,7 @@ import Test.HUnit (Test, (~:), (~?=))
 tests :: [Test]
 tests =
   [ "expenseGroupSummary"
-      ~: [ "empty group" ~: expenseGroupSummary mempty [] ~?= ExpenseGroupSummary [] [],
+      ~: [ "empty group" ~: expenseGroupSummary mempty [] ~?= ExpenseGroupSummary [] [] 0,
            "non-empty group"
              ~: expenseGroupSummary
                ( Map.fromList
@@ -26,5 +26,6 @@ tests =
                  ("b", 2)
                ]
                [("[no-category]", 2), ("category1", 3)]
+               5
          ]
   ]

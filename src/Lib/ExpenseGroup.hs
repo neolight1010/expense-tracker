@@ -20,7 +20,7 @@ data ExpenseEntry = ExpenseEntry {item :: ItemId, logs :: [Price]}
 instance FromJSON ExpenseEntry
 instance ToJSON ExpenseEntry
 
-data ExpenseGroupSummary = ExpenseGroupSummary { itemTotals :: [(String, Price)], categoryTotals :: [(String, Price)] }
+data ExpenseGroupSummary = ExpenseGroupSummary { itemTotals :: [(String, Price)], categoryTotals :: [(String, Price)], total :: Price }
   deriving (Generic, Show, Eq)
 
 instance ToJSON ExpenseGroupSummary
@@ -36,7 +36,10 @@ expenseGroupSummary itemDefinitions group =
       categoryExpensesList = Data.Bifunctor.first findCategory . expenseEntryToTuple <$> group
       categoryTotals' = Map.toList $ Map.fromListWith (+) categoryExpensesList
 
-   in ExpenseGroupSummary itemTotals' categoryTotals'
+      total' :: Price
+      total' = sum $ map snd categoryTotals'
+
+   in ExpenseGroupSummary itemTotals' categoryTotals' total'
 
 expenseEntryToTuple :: ExpenseEntry -> (ItemId, Price)
 expenseEntryToTuple (ExpenseEntry i p) = (i, sum p)
