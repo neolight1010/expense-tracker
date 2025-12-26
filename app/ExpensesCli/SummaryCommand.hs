@@ -28,14 +28,13 @@ showCategoryTotals :: Maybe ExpenseGroupSummary -> [Rainbow.Chunk]
 showCategoryTotals summary =
   let categories :: [Rainbow.Chunk]
       categories = concatMap showTuple (concatMap categoryTotals summary)
-   in Rainbow.fore Rainbow.cyan "Category totals:\n" : categories 
+   in Rainbow.fore Rainbow.cyan "Category totals:\n" : categories
 
 showItemTotals :: Maybe ExpenseGroupSummary -> [Rainbow.Chunk]
 showItemTotals summary =
   let items :: [Rainbow.Chunk]
       items = concatMap showTuple (concatMap itemTotals summary)
    in Rainbow.fore Rainbow.cyan "Item totals:\n" : items
-      
 
 showGrandTotal :: Maybe ExpenseGroupSummary -> [Rainbow.Chunk]
 showGrandTotal summary =
