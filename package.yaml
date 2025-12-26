@@ -52,6 +52,7 @@ executables:
     - iris
     - optparse-applicative
     - mtl
+    - rainbow
 
 tests:
   expense-tracker-test:
