@@ -4,13 +4,13 @@
 
 module Lib.ExpenseGroup (ExpenseGroupSummary (..), expenseGroupSummary, ExpenseGroup, ExpenseEntry (..), PricedLabel) where
 
+import qualified Data.Bifunctor
+import qualified Data.List as List
 import qualified Data.Map as Map
 import qualified Data.Ord as Ord
-import qualified Data.List as List
 import Data.Yaml.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
-import Lib.Item (ItemId, ItemDefinitions)
-import qualified Data.Bifunctor
+import Lib.Item (ItemDefinitions, ItemId)
 import qualified Lib.Item as Item
 import Lib.Price (Price)
 
@@ -20,9 +20,10 @@ data ExpenseEntry = ExpenseEntry {item :: ItemId, logs :: [Price]}
   deriving (Generic, Eq, Show)
 
 instance FromJSON ExpenseEntry
+
 instance ToJSON ExpenseEntry
 
-data ExpenseGroupSummary = ExpenseGroupSummary { itemTotals :: [PricedLabel], categoryTotals :: [PricedLabel], total :: Price }
+data ExpenseGroupSummary = ExpenseGroupSummary {itemTotals :: [PricedLabel], categoryTotals :: [PricedLabel], total :: Price}
   deriving (Generic, Show, Eq)
 
 instance ToJSON ExpenseGroupSummary
@@ -39,7 +40,6 @@ expenseGroupSummary itemDefinitions group =
 
       total' :: Price
       total' = sum $ map snd categoryTotals'
-
    in ExpenseGroupSummary itemTotals' categoryTotals' total'
 
 expenseEntryToTuple :: ExpenseEntry -> (ItemId, Price)
