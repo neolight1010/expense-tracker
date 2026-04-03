@@ -22,8 +22,8 @@ tests =
                  ExpenseEntry {item = "b", logs = [1, 1, 1, 1, 1]}
                ]
              ~?= ExpenseGroupSummary
-               [ ("a", 3),
-                 ("b", 5)
+               [ ("b", 5),
+                 ("a", 3)
                ]
                [("[no-category]", 5), ("category1", 3)]
                8
