@@ -2,9 +2,11 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE PartialTypeSignatures #-}
 
-module Lib.ExpenseGroup (ExpenseGroupSummary (..), expenseGroupSummary, ExpenseGroup, ExpenseEntry (..)) where
+module Lib.ExpenseGroup (ExpenseGroupSummary (..), expenseGroupSummary, ExpenseGroup, ExpenseEntry (..), CategoryTotal) where
 
 import qualified Data.Map as Map
+import qualified Data.Ord as Ord
+import qualified Data.List as List
 import Data.Yaml.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
 import Lib.Item (ItemId, ItemDefinitions)
@@ -20,21 +22,19 @@ data ExpenseEntry = ExpenseEntry {item :: ItemId, logs :: [Price]}
 instance FromJSON ExpenseEntry
 instance ToJSON ExpenseEntry
 
-data ExpenseGroupSummary = ExpenseGroupSummary { itemTotals :: [(String, Price)], categoryTotals :: [(String, Price)], total :: Price }
+data ExpenseGroupSummary = ExpenseGroupSummary { itemTotals :: [(String, Price)], categoryTotals :: [CategoryTotal], total :: Price }
   deriving (Generic, Show, Eq)
 
 instance ToJSON ExpenseGroupSummary
+
+type CategoryTotal = (String, Price)
 
 expenseGroupSummary :: ItemDefinitions -> ExpenseGroup -> ExpenseGroupSummary
 expenseGroupSummary itemDefinitions group =
   let itemExpensesMap = Map.fromListWith (+) (expenseEntryToTuple <$> group)
       itemTotals' = Map.toList itemExpensesMap
 
-      findCategory :: ItemId -> String
-      findCategory itemId = maybe noCategory Item.category (Map.lookup itemId itemDefinitions)
-
-      categoryExpensesList = Data.Bifunctor.first findCategory . expenseEntryToTuple <$> group
-      categoryTotals' = Map.toList $ Map.fromListWith (+) categoryExpensesList
+      categoryTotals' = sortCategoryTotals $ aggregateCategoryTotals itemDefinitions group
 
       total' :: Price
       total' = sum $ map snd categoryTotals'
@@ -43,6 +43,17 @@ expenseGroupSummary itemDefinitions group =
 
 expenseEntryToTuple :: ExpenseEntry -> (ItemId, Price)
 expenseEntryToTuple (ExpenseEntry i p) = (i, sum p)
+
+aggregateCategoryTotals :: ItemDefinitions -> ExpenseGroup -> [CategoryTotal]
+aggregateCategoryTotals itemDefinitions group = Map.toList $ Map.fromListWith (+) categoryExpensesList
+  where
+    categoryExpensesList = Data.Bifunctor.first findCategory . expenseEntryToTuple <$> group
+
+    findCategory :: ItemId -> String
+    findCategory itemId = maybe noCategory Item.category (Map.lookup itemId itemDefinitions)
+
+sortCategoryTotals :: [CategoryTotal] -> [CategoryTotal]
+sortCategoryTotals = List.sortOn (Ord.Down . snd)
 
 noCategory :: String
 noCategory = "[no-category]"
